@@ -10,9 +10,11 @@ export class AppComponent implements OnInit {
   title = 'weather-app';
 
   ngOnInit() {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      console.log("Latitude", pos.coords.latitude);
-      console.log("Longitude", pos.coords.longitude);
-    });
+    if(typeof navigator !== 'undefined'){
+      navigator.geolocation.getCurrentPosition((pos) => {
+        console.log("Latitude", pos.coords.latitude);
+        console.log("Longitude", pos.coords.longitude);
+      });
+    }
   }
 }

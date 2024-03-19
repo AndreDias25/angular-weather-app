@@ -1,0 +1,35 @@
+@media(max-width: 425px){
+  *{
+    background-color: pink;
+  }
+
+  .main-container{
+    display: grid;
+    height: 100vh;
+    grid-template-areas:
+    "input"
+    "weather-card"
+    "forecast-card"
+    "advice-card";
+    grid-template-rows: 1fr 3fr 2fr 2fr;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  .container-input{
+    grid-area: input;
+    border: 1px solid black;
+  }
+
+  .container-main-weather-card{
+    grid-area: weather-card;
+  }
+
+  .container-forecast-card{
+    grid-area: forecast-card;
+  }
+
+  .container-random-advice-card{
+    grid-area: advice-card;
+  }
+}

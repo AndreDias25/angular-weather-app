@@ -1,4 +1,18 @@
-<div class="container">
-  <input type="text" (keydown)="enterCity($event)">
-  <button (click)="searchCity($event.target)">Pesquisar</button>
+<div class="main-container">
+  <div class="container-input">
+    <input type="text" (keydown)="enterCity($event)">
+    <button (click)="searchCity($event.target)">Pesquisar</button>
+  </div>
+
+  <div class="container-main-weather-card">
+    <app-main-weather-card></app-main-weather-card>
+  </div>
+
+  <div class="container-forecast-card">
+    <app-forecast-card></app-forecast-card>
+  </div>
+
+  <div class="container-random-advice-card">
+    <app-random-advice-card></app-random-advice-card>
+  </div>
 </div>

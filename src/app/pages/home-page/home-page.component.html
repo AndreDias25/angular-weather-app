@@ -1,7 +1,15 @@
 <div class="main-container">
   <div class="container-input">
-    <input type="text" (keydown)="enterCity($event)">
-    <button (click)="searchCity($event.target)">Pesquisar</button>
+    <input type="text" (keydown)="enterCity($event)" list="cidades">
+    <datalist id="cidades">
+      <option value="Opção 1">1</option>
+    </datalist>
+    <select name="" id="">
+      <option value="oi"></option>
+    </select>
+    <span class="material-symbols-outlined" (click)="searchCity($event.target)">
+      search
+      </span>
   </div>
 
   <div class="container-main-weather-card">

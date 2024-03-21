@@ -1,9 +1,4 @@
 @media(max-width: 425px){
-  *{
-    // background-color: pink;
-    font-family: 'Poppins', sans-serif;
-  }
-
   .main-container{
     display: grid;
     height: 100vh;
@@ -13,6 +8,7 @@
     "forecast-card"
     "advice-card";
     grid-template-rows: 1fr 3fr 2fr 2fr;
+    grid-template-columns: 1fr;
     justify-content: center;
     justify-items: center;
     background-image: url("../../../assets/images/cloud1.png");
@@ -21,18 +17,37 @@
 
   .container-input{
     grid-area: input;
-    border: 1px solid black;
+    //border: 1px solid black;
+
+    input{
+      //color: #fff;
+      font-size: 15px;
+      // width: 100%;
+      // padding: 20px 5px 5px;
+      //background-color: blur(10px);
+      border: none;
+      border-radius: 5px;
+    }
+
+
   }
 
   .container-main-weather-card{
     grid-area: weather-card;
+    width: 80%;
   }
 
   .container-forecast-card{
     grid-area: forecast-card;
+    // display: flex;
+    // flex-wrap: wrap;
+    // align-content: center;
+    width: 80%;
+    margin: auto 0;
   }
 
   .container-random-advice-card{
     grid-area: advice-card;
+    width: 80%;
   }
 }

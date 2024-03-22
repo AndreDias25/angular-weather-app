@@ -1,10 +1,10 @@
 <div class="main-container">
   <div class="container-input">
-    <input placeholder="Pesquise uma cidade" name="cidades" type="text" (keydown)="enterCity($event)" list="cidades">
+    <input placeholder="Pesquise uma cidade" name="cidades" type="text" (keydown)="enterCity($event)" list="cidades" #cidades>
     <datalist id="cidades">
       <option value="Opção 1">1</option>
     </datalist>
-    <span class="material-symbols-outlined" (click)="searchCity($event.target)">
+    <span class="material-symbols-outlined" (click)="searchCity(cidades)">
       search
     </span>
   </div>

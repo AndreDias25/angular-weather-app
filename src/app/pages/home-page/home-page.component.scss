@@ -12,12 +12,20 @@
     justify-content: center;
     justify-items: center;
     background-image: url("../../../assets/images/cloud1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top; //!
   }
 
 
   .container-input{
     grid-area: input;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
     //border: 1px solid black;
+    color: #91B4C6;
+
 
     input{
       //color: #fff;
@@ -25,8 +33,13 @@
       // width: 100%;
       // padding: 20px 5px 5px;
       //background-color: blur(10px);
-      border: none;
-      border-radius: 5px;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      height: 30%;
+    }
+
+    span{
+      font-size: 28px;
     }
 
 

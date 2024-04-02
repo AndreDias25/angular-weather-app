@@ -2,7 +2,7 @@
   <div class="container-input">
     <input placeholder="Pesquise uma cidade" name="cidades" type="text" (keydown)="enterCity($event)" list="cidades" #cidades>
     <datalist id="cidades">
-      <option value="Opção 1">1</option>
+      <option value="Opção 1">{{ cityFound }}</option>
     </datalist>
     <span class="material-symbols-outlined" (click)="searchCity(cidades)">
       search

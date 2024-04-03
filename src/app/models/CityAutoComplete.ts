@@ -1,20 +1,20 @@
 export interface Country {
-	iD: string;
-	localizedName: string;
+	ID: string;
+	LocalizedName: string;
 }
 
 export interface AdministrativeArea {
-	iD: string;
-	localizedName: string;
+	ID: string;
+	LocalizedName: string;
 }
 
 export interface CityAutoComplete {
-	version: number;
-	key: string;
-	type: string;
-	rank: number;
-	localizedName: string;
-	country: Country;
-	administrativeArea: AdministrativeArea;
+	Version: number;
+	Key: string;
+	Type: string;
+	Rank: number;
+	LocalizedName: string;
+	Country: Country;
+	AdministrativeArea: AdministrativeArea;
 }
 

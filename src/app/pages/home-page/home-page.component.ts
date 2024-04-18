@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
+import { CityAutoComplete } from '../../models/CityAutoComplete';
 
 @Component({
   selector: 'app-home-page',
@@ -8,7 +9,9 @@ import { AccuweatherApiService } from '../../services/accuweather-api.service';
 })
 export class HomePageComponent {
   cityName!: string;
-  cityFound!: string;
+  cityFound: CityAutoComplete[] = [];
+  cityKeySelected!: string;
+
 
   constructor(private service: AccuweatherApiService){}
 
@@ -27,16 +30,29 @@ export class HomePageComponent {
     // console.log(result);
 
     if (event.key === 'Enter') {
+      console.log("oiiii")
       const cityName = event.target.value;
-      this.service.getCityAutoComplete(cityName).subscribe((result: any) => {
+      this.service.getCityAutoComplete(cityName).subscribe((result: CityAutoComplete[]) => {
         console.log(result);
         console.log(result[0].LocalizedName);
-        this.cityFound = result[0].LocalizedName;
+        //this.cityFound = result.LocalizedName;
+        this.cityFound = result;
+        console.log(this.cityFound)
       });
+
+      this.cityFound.forEach(objeto => {
+        console.log(objeto.LocalizedName);
+      })
     }
   }
 
-  searchCity(event:any){
-    console.log(event.value);
+  searchCity(cityName:string){
+    this.cityFound.forEach(objeto => {
+      if(objeto.LocalizedName === cityName){
+        this.cityKeySelected = objeto.Key;
+        console.log(this.cityKeySelected);
+      }
+    })
   }
+
 }

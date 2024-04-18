@@ -10,12 +10,17 @@ import { CityAutoComplete } from '../models/CityAutoComplete';
 export class AccuweatherApiService {
   private cityautoComplete:string = environment.apiAutoCompleteSearch;
   private apiKey:string = environment.apiKey;
-  private cityAutoCompleteModel:CityAutoComplete | any;
+  private cityAutoCompleteModel!:CityAutoComplete;
 
   constructor(private http: HttpClient) { }
 
-  getCityAutoComplete(cityName:string):Observable<CityAutoComplete>{
-    this.cityAutoCompleteModel = this.http.get<CityAutoComplete>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
-    return this.cityAutoCompleteModel;
+  getCityAutoComplete(cityName:string):Observable<CityAutoComplete[]>{
+    //this.cityAutoCompleteModel = this.http.get<CityAutoComplete>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
+    //return this.cityAutoCompleteModel;
+    return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
+  }
+
+  getCurrentCondition(cityKey:string){
+
   }
 }

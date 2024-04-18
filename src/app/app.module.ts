@@ -9,6 +9,7 @@ import { MainWeatherCardComponent } from './components/main-weather-card/main-we
 import { ForecastCardComponent } from './components/forecast-card/forecast-card.component';
 import { RandomAdviceCardComponent } from './components/random-advice-card/random-advice-card.component';
 import { AccuweatherApiService } from './services/accuweather-api.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AccuweatherApiService } from './services/accuweather-api.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     provideClientHydration(),

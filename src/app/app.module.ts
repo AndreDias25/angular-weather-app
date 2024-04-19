@@ -1,6 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
+import ptBr from '@angular/common/locales/pt';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +13,9 @@ import { ForecastCardComponent } from './components/forecast-card/forecast-card.
 import { RandomAdviceCardComponent } from './components/random-advice-card/random-advice-card.component';
 import { AccuweatherApiService } from './services/accuweather-api.service';
 import { FormsModule } from '@angular/forms';
+
+
+registerLocaleData(ptBr);
 
 @NgModule({
   declarations: [
@@ -26,6 +32,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   providers: [
+    {provide:LOCALE_ID, useValue:'pt-BR'},
     provideClientHydration(),
     AccuweatherApiService
   ],

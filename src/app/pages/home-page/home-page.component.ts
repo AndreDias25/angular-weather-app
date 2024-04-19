@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
+import { CityCurrentCondition } from '../../models/CityCurrentCondition';
 
 @Component({
   selector: 'app-home-page',
@@ -11,6 +12,13 @@ export class HomePageComponent {
   cityName!: string;
   cityFound: CityAutoComplete[] = [];
   cityKeySelected!: string;
+
+  temperature!: number;
+  weatherText!: string;
+  localObservationDateTime!: string;
+  realFeelTemperature!: number;
+  currentCity!: string;
+  currentState!: string;
 
 
   constructor(private service: AccuweatherApiService){}
@@ -51,6 +59,16 @@ export class HomePageComponent {
       if(objeto.LocalizedName === cityName){
         this.cityKeySelected = objeto.Key;
         console.log(this.cityKeySelected);
+
+        this.service.getCurrentCondition(this.cityKeySelected).subscribe((result: CityCurrentCondition[]) => {
+          console.log(result);
+          this.temperature = result[0].Temperature.Metric.Value;
+          this.weatherText = result[0].WeatherText;
+          this.currentCity = objeto.LocalizedName;
+          this.currentState = objeto.AdministrativeArea.LocalizedName;
+          this.localObservationDateTime = result[0].LocalObservationDateTime;
+          this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
+        })
       }
     })
   }

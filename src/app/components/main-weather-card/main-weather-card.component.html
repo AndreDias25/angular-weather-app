@@ -9,19 +9,19 @@
     <span class="material-symbols-outlined">
       filter_drama
     </span>
-    <p>25°</p>
+    <p>{{temperature}}</p>
   </div>
   <div class="weather-text">
-    <p>Cloudy</p>
+    <p>{{weatherText}}</p>
   </div>
   <div class="localizacao">
-    <p>California, Los Angeles</p>
+    <p>{{currentCity}}, {{currentState}}</p>
   </div>
   <div class="data">
-    <p>21 Oct 2019</p>
+    <p>{{localObservationDateTime | date:'longDate'}}</p>
   </div>
   <div class="thermal-sensation-time">
-    <p>Feels Like 28</p>
+    <p>Sensação: {{realFeelTemperature}}</p>
     <span>|</span>
     <p>Sunset: 18:20</p>
   </div>

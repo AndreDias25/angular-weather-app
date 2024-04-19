@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-main-weather-card',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './main-weather-card.component.scss'
 })
 export class MainWeatherCardComponent {
-
+  @Input() temperature!: number;
+  @Input() weatherText!: string;
+  @Input() localObservationDateTime!: string;
+  @Input() realFeelTemperature!: number;
+  @Input() currentCity!: string;
+  @Input() currentState!: string;
 }

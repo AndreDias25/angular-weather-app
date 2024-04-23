@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
+import { Next12Hours } from '../../models/Next12Hours';
 
 @Component({
   selector: 'app-home-page',
@@ -19,6 +20,9 @@ export class HomePageComponent {
   realFeelTemperature!: number;
   currentCity!: string;
   currentState!: string;
+
+  upcomingTimes!:string[];
+  temperatureForecast!:number[];
 
 
   constructor(private service: AccuweatherApiService){}
@@ -68,6 +72,21 @@ export class HomePageComponent {
           this.currentState = objeto.AdministrativeArea.LocalizedName;
           this.localObservationDateTime = result[0].LocalObservationDateTime;
           this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
+        })
+
+        this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {
+          if (Array.isArray(result)) {
+            
+            this.upcomingTimes = result.map(item => item.DateTime);
+            this.temperatureForecast = result.map(item => item.Temperature.Value)
+            console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
+          } else {
+
+            this.upcomingTimes = [result.DateTime];
+            this.temperatureForecast = [result.Temperature.Value];
+          }
+
+          // console.log(result)
         })
       }
     })

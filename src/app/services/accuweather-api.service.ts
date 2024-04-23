@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { CityAutoComplete } from '../models/CityAutoComplete';
 import { CityCurrentCondition } from '../models/CityCurrentCondition';
+import { Next12Hours} from '../models/Next12Hours';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,8 @@ import { CityCurrentCondition } from '../models/CityCurrentCondition';
 export class AccuweatherApiService {
   private cityautoComplete:string = environment.apiAutoCompleteSearch;
   private cityCurrentCondition:string = environment.apiCurrentCondition;
+  private Next12hours:string = environment.apiNext12Hours;
   private apiKey:string = environment.apiKey;
-  private cityAutoCompleteModel!:CityAutoComplete;
-  private cityCurrentConditionModel!:CityCurrentCondition;
 
   constructor(private http: HttpClient) { }
 
@@ -25,5 +25,9 @@ export class AccuweatherApiService {
 
   getCurrentCondition(cityKey:string){
     return this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${this.apiKey}&details=true`)
+  }
+
+  getNext12hours(cityKey:string){
+    return this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${this.apiKey}&metric=true`)
   }
 }

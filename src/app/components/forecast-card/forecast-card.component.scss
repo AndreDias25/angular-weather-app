@@ -25,6 +25,12 @@
 .container-items{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.forecast-item{
+  flex-basis: calc(20% - 10px);
+  margin-bottom: 10px;
 }
 
 .forecast-icon-number{

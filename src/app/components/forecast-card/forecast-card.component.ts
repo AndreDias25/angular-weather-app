@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-forecast-card',
@@ -6,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './forecast-card.component.scss'
 })
 export class ForecastCardComponent {
-
+    @Input() upcomingTimes!:string[];
+    @Input() temperatureForecast!:number[];
 }

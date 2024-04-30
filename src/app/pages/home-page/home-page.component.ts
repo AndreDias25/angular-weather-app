@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
 import { Next12Hours } from '../../models/Next12Hours';
+import { RandomQuote } from '../../models/RandomQuote';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })
-export class HomePageComponent {
+export class HomePageComponent implements OnInit {
   cityName!: string;
   cityFound: CityAutoComplete[] = [];
   cityKeySelected!: string;
@@ -24,8 +25,19 @@ export class HomePageComponent {
   upcomingTimes!:string[];
   temperatureForecast!:number[];
 
+  randomQuote!:string;
+  author!:string;
+  content!:string;
+
 
   constructor(private service: AccuweatherApiService){}
+
+  ngOnInit() {
+    this.service.getRandomQuote().subscribe((quote: RandomQuote) => {
+      this.author = quote.author;
+      this.content = quote.content;
+    })
+  }
 
   enterCity(event:any){
    //console.log(event);
@@ -76,7 +88,7 @@ export class HomePageComponent {
 
         this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {
           if (Array.isArray(result)) {
-            
+
             this.upcomingTimes = result.map(item => item.DateTime);
             this.temperatureForecast = result.map(item => item.Temperature.Value)
             console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)

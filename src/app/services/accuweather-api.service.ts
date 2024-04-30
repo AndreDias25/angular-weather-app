@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { CityAutoComplete } from '../models/CityAutoComplete';
 import { CityCurrentCondition } from '../models/CityCurrentCondition';
 import { Next12Hours} from '../models/Next12Hours';
+import { RandomQuote } from '../models/RandomQuote';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,9 @@ export class AccuweatherApiService {
 
   getNext12hours(cityKey:string){
     return this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${this.apiKey}&metric=true`)
+  }
+
+  getRandomQuote(){
+    return this.http.get<RandomQuote>("https://api.quotable.io/random");
   }
 }

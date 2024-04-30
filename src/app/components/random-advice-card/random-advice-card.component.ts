@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-random-advice-card',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrl: './random-advice-card.component.scss'
 })
 export class RandomAdviceCardComponent {
-
+  @Input() author!:string;
+  @Input() content!:string;
 }

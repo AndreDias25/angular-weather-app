@@ -35,4 +35,8 @@ export class AccuweatherApiService {
   getRandomQuote(){
     return this.http.get<RandomQuote>("https://api.quotable.io/random");
   }
+
+  getIconsAndBackground(): Observable<any>{
+    return this.http.get("assets/weatherIconsAndBackground.json")
+  }
 }

@@ -29,6 +29,8 @@ export class HomePageComponent implements OnInit {
   author!:string;
   content!:string;
 
+  iconWeather!:string;
+
 
   constructor(private service: AccuweatherApiService){}
 
@@ -84,6 +86,14 @@ export class HomePageComponent implements OnInit {
           this.currentState = objeto.AdministrativeArea.LocalizedName;
           this.localObservationDateTime = result[0].LocalObservationDateTime;
           this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
+
+          this.service.getIconsAndBackground().subscribe(dados => {
+            dados.forEach((dados: any) => {
+              if((result[0].WeatherText == dados.WeatherText && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText == dados.WeatherText && dados.IsDayTime == undefined)){
+                this.iconWeather = dados.weatherIcon;
+              }
+            });
+          })
         })
 
         this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {

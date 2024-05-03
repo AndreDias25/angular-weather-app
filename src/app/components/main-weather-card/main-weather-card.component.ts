@@ -13,4 +13,5 @@ export class MainWeatherCardComponent {
   @Input() realFeelTemperature!: number;
   @Input() currentCity!: string;
   @Input() currentState!: string;
+  @Input() iconWeather!: string;
 }

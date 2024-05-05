@@ -14,4 +14,6 @@ export class MainWeatherCardComponent {
   @Input() currentCity!: string;
   @Input() currentState!: string;
   @Input() iconWeather!: string;
+  @Input() backgroundColor!:string;
+  @Input() textColor!:string;
 }

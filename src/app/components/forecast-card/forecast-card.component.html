@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngStyle]="{'background-color':backgroundColorForecast}">
   <div class="container-items">
     <div class="forecast-item" *ngFor='let upcoming of upcomingTimes | slice:0:10; let i = index'>
       <div class="day-forecast"><p>{{upcoming | date:'shortTime'}}</p></div>

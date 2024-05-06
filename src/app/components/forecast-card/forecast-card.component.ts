@@ -9,4 +9,5 @@ import { SlicePipe } from '@angular/common';
 export class ForecastCardComponent {
     @Input() upcomingTimes!:string[];
     @Input() temperatureForecast!:number[];
+    @Input() backgroundColorForecast!:string;
 }

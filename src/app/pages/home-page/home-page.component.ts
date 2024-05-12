@@ -45,7 +45,22 @@ export class HomePageComponent implements OnInit {
       this.author = quote.author;
       this.content = quote.content;
     })
+
+    console.log(`Tipo: ${this.cityFound.length}`);
+
+    let ultimaCidade:string | null = localStorage.getItem("nomeCidade");
+    let keyultimaCidade:string | null  = localStorage.getItem("keyCidade");
+    let estadoltimaCidade:string | null  = localStorage.getItem("estadoCidade");
+    if(ultimaCidade){
+      console.log(ultimaCidade)
+      this.searchCity(ultimaCidade, keyultimaCidade, estadoltimaCidade)
+    }else{
+      //this.searchCity()
+      //continuar para definir uma cidade padrão caso seja a primeira vez do user no app
+    }
   }
+
+
 
   enterCity(event:any){
    //console.log(event);
@@ -78,48 +93,88 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-  searchCity(cityName:string){
-    this.cityFound.forEach(objeto => {
-      if(objeto.LocalizedName === cityName){
-        this.cityKeySelected = objeto.Key;
-        console.log(this.cityKeySelected);
+  searchCity(cityName:string, keyCity?:string | null, estadoCity?:string | null){
+    if(this.cityFound.length === 0){
+      this.service.getCurrentCondition(keyCity).subscribe((result: CityCurrentCondition[]) => {
+        console.log(result);
+        this.temperature = result[0].Temperature.Metric.Value;
+        this.weatherText = result[0].WeatherText;
+        this.currentCity = cityName;
+        this.currentState = String(estadoCity);
+        this.localObservationDateTime = result[0].LocalObservationDateTime;
+        this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
 
-        this.service.getCurrentCondition(this.cityKeySelected).subscribe((result: CityCurrentCondition[]) => {
-          console.log(result);
-          this.temperature = result[0].Temperature.Metric.Value;
-          this.weatherText = result[0].WeatherText;
-          this.currentCity = objeto.LocalizedName;
-          this.currentState = objeto.AdministrativeArea.LocalizedName;
-          this.localObservationDateTime = result[0].LocalObservationDateTime;
-          this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
+        this.service.getIconsAndBackground().subscribe(dados => {
+          dados.forEach((dados: any) => {
+            if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
+              this.iconWeather = dados.weatherIcon;
+              this.backgroundImageUrl = dados.backgroundImage;
 
-          this.service.getIconsAndBackground().subscribe(dados => {
-            dados.forEach((dados: any) => {
-              if((result[0].WeatherText == dados.WeatherText && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText == dados.WeatherText && dados.IsDayTime == undefined)){
-                this.iconWeather = dados.weatherIcon;
-                this.backgroundImageUrl = dados.backgroundImage;
+              console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
+              this.changeBackgroundAndColor(this.backgroundImageUrl)
+            }
+          });
+        })
+      })
 
-                console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
-                this.changeBackgroundAndColor(this.backgroundImageUrl)
-              }
-            });
+      this.service.getNext12hours(String(keyCity)).subscribe((result: Next12Hours | Next12Hours[]) => {
+        if (Array.isArray(result)) {
+
+          this.upcomingTimes = result.map(item => item.DateTime);
+          this.temperatureForecast = result.map(item => item.Temperature.Value)
+          console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
+        } else {
+
+          this.upcomingTimes = [result.DateTime];
+          this.temperatureForecast = [result.Temperature.Value];
+        }
+      })
+    }else{
+      this.cityFound.forEach(objeto => {
+        if(objeto.LocalizedName === cityName){
+          this.cityKeySelected = objeto.Key;
+          console.log(this.cityKeySelected);
+          localStorage.setItem("nomeCidade", cityName);
+          localStorage.setItem("keyCidade", this.cityKeySelected);
+          localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
+
+          this.service.getCurrentCondition(this.cityKeySelected).subscribe((result: CityCurrentCondition[]) => {
+            console.log(result);
+            this.temperature = result[0].Temperature.Metric.Value;
+            this.weatherText = result[0].WeatherText;
+            this.currentCity = objeto.LocalizedName;
+            this.currentState = objeto.AdministrativeArea.LocalizedName;
+            this.localObservationDateTime = result[0].LocalObservationDateTime;
+            this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
+
+            this.service.getIconsAndBackground().subscribe(dados => {
+              dados.forEach((dados: any) => {
+                if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
+                  this.iconWeather = dados.weatherIcon;
+                  this.backgroundImageUrl = dados.backgroundImage;
+
+                  console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
+                  this.changeBackgroundAndColor(this.backgroundImageUrl)
+                }
+              });
+            })
           })
-        })
 
-        this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {
-          if (Array.isArray(result)) {
+          this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {
+            if (Array.isArray(result)) {
 
-            this.upcomingTimes = result.map(item => item.DateTime);
-            this.temperatureForecast = result.map(item => item.Temperature.Value)
-            console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
-          } else {
+              this.upcomingTimes = result.map(item => item.DateTime);
+              this.temperatureForecast = result.map(item => item.Temperature.Value)
+              console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
+            } else {
 
-            this.upcomingTimes = [result.DateTime];
-            this.temperatureForecast = [result.Temperature.Value];
-          }
-        })
-      }
-    })
+              this.upcomingTimes = [result.DateTime];
+              this.temperatureForecast = [result.Temperature.Value];
+            }
+          })
+        }
+      })
+    }
   }
 
   changeBackgroundAndColor(backgroundImage:string){

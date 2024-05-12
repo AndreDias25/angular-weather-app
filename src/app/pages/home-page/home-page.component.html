@@ -2,7 +2,7 @@
   <div class="container-input">
     <input placeholder="Pesquise uma cidade" name="cidades" type="text" (keydown)="enterCity($event)" list="cidades" #cidades>
     <datalist id="cidades">
-      <option *ngFor="let city of cityFound" [value]="city.LocalizedName">{{ city.LocalizedName }}</option>
+      <option *ngFor="let city of cityFound" [value]="city.LocalizedName">{{ city.LocalizedName }} - {{city.AdministrativeArea.LocalizedName}}</option>
     </datalist>
     <span class="material-symbols-outlined" (click)="searchCity(cidades.value)">
       search

@@ -24,7 +24,7 @@ export class AccuweatherApiService {
     return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
   }
 
-  getCurrentCondition(cityKey:string){
+  getCurrentCondition(cityKey:string | null | undefined){
     return this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${this.apiKey}&details=true`)
   }
 

@@ -1,7 +1,7 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 
 
@@ -12,7 +12,7 @@ import { MainWeatherCardComponent } from './components/main-weather-card/main-we
 import { ForecastCardComponent } from './components/forecast-card/forecast-card.component';
 import { RandomAdviceCardComponent } from './components/random-advice-card/random-advice-card.component';
 import { AccuweatherApiService } from './services/accuweather-api.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 registerLocaleData(ptBr);
@@ -29,7 +29,9 @@ registerLocaleData(ptBr);
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    CommonModule,
+    ReactiveFormsModule
   ],
   providers: [
     {provide:LOCALE_ID, useValue:'pt-BR'},

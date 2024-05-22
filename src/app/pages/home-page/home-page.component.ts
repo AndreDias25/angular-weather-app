@@ -4,6 +4,8 @@ import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
 import { Next12Hours } from '../../models/Next12Hours';
 import { RandomQuote } from '../../models/RandomQuote';
+import { FormControl } from '@angular/forms';
+import { Observable, debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
@@ -14,6 +16,8 @@ export class HomePageComponent implements OnInit {
   cityName!: string;
   cityFound: CityAutoComplete[] = [];
   cityKeySelected!: string;
+  queryField = new FormControl();
+  results$!: Observable<any>;
 
   temperature!: number;
   weatherText!: string;
@@ -41,6 +45,29 @@ export class HomePageComponent implements OnInit {
   constructor(private service: AccuweatherApiService){}
 
   ngOnInit() {
+    this.results$ = this.queryField.valueChanges
+      .pipe(
+        map(value => value.trim()),
+        filter(value => value.length > 2),
+        debounceTime(200),
+        distinctUntilChanged(),
+        tap(cityname => {
+          this.service.getCityAutoComplete(cityname).subscribe((result: CityAutoComplete[]) => {
+            console.log(result);
+            console.log(result[0].LocalizedName);
+            //this.cityFound = result.LocalizedName;
+            this.cityFound = result;
+            console.log("cityFound="+this.cityFound)
+          });
+
+          this.cityFound.forEach(objeto => {
+            console.log("LocalizedName="+objeto.LocalizedName);
+          })
+        }),
+      )
+
+    this.results$.subscribe();
+
     this.service.getRandomQuote().subscribe((quote: RandomQuote) => {
       this.author = quote.author;
       this.content = quote.content;
@@ -60,38 +87,6 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-
-
-  enterCity(event:any){
-   //console.log(event);
-
-    // if(event.which == 8){
-    //   console.log("OKay")
-    // }
-
-    // if(event.key === 'Enter'){
-    //   console.log("Enter")
-    // }
-    // this.cityName = event.target.value;
-    // let result = this.service.getCityAutoComplete(this.cityName);
-    // console.log(result);
-
-    if (event.key === 'Enter') {
-      console.log("oiiii")
-      const cityName = event.target.value;
-      this.service.getCityAutoComplete(cityName).subscribe((result: CityAutoComplete[]) => {
-        console.log(result);
-        console.log(result[0].LocalizedName);
-        //this.cityFound = result.LocalizedName;
-        this.cityFound = result;
-        console.log(this.cityFound)
-      });
-
-      this.cityFound.forEach(objeto => {
-        console.log(objeto.LocalizedName);
-      })
-    }
-  }
 
   searchCity(cityName:string, keyCity?:string | null, estadoCity?:string | null){
     if(this.cityFound.length === 0){

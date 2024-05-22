@@ -1,6 +1,6 @@
 <div class="main-container" [ngStyle]="{ 'background-image': 'url(' + backgroundImageUrl + ')' }">
   <div class="container-input">
-    <input placeholder="Pesquise uma cidade" name="cidades" type="text" (keydown)="enterCity($event)" list="cidades" #cidades>
+    <input placeholder="Pesquise uma cidade" name="cidades" type="text" list="cidades" #cidades [formControl]="queryField">
     <datalist id="cidades">
       <option *ngFor="let city of cityFound" [value]="city.LocalizedName">{{ city.LocalizedName }} - {{city.AdministrativeArea.LocalizedName}}</option>
     </datalist>

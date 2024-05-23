@@ -40,9 +40,13 @@ export class HomePageComponent implements OnInit {
   textColor!:string;
 
   backgroundColorForecast!:string;
+  audio = new Audio();
 
 
-  constructor(private service: AccuweatherApiService){}
+  constructor(private service: AccuweatherApiService){
+    this.audio.src = '../../../assets/sounds/click.m4a';  // Substitua pelo caminho do seu arquivo de áudio
+    this.audio.load();
+  }
 
   ngOnInit() {
     this.results$ = this.queryField.valueChanges
@@ -86,7 +90,6 @@ export class HomePageComponent implements OnInit {
       //continuar para definir uma cidade padrão caso seja a primeira vez do user no app
     }
   }
-
 
   searchCity(cityName:string, keyCity?:string | null, estadoCity?:string | null){
     if(this.cityFound.length === 0){
@@ -170,6 +173,10 @@ export class HomePageComponent implements OnInit {
         }
       })
     }
+  }
+
+  playSound(){
+    this.audio.play();
   }
 
   changeBackgroundAndColor(backgroundImage:string){

@@ -4,7 +4,7 @@
     <datalist id="cidades">
       <option *ngFor="let city of cityFound" [value]="city.LocalizedName">{{ city.LocalizedName }} - {{city.AdministrativeArea.LocalizedName}}</option>
     </datalist>
-    <span class="material-symbols-outlined" (click)="searchCity(cidades.value)">
+    <span class="material-symbols-outlined" (click)="searchCity(cidades.value)" (click)="playSound()">
       search
     </span>
   </div>

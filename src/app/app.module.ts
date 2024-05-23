@@ -13,6 +13,7 @@ import { ForecastCardComponent } from './components/forecast-card/forecast-card.
 import { RandomAdviceCardComponent } from './components/random-advice-card/random-advice-card.component';
 import { AccuweatherApiService } from './services/accuweather-api.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MsgErrorComponent } from './components/msg-error/msg-error.component';
 
 
 registerLocaleData(ptBr);
@@ -23,7 +24,8 @@ registerLocaleData(ptBr);
     HomePageComponent,
     MainWeatherCardComponent,
     ForecastCardComponent,
-    RandomAdviceCardComponent
+    RandomAdviceCardComponent,
+    MsgErrorComponent
   ],
   imports: [
     BrowserModule,

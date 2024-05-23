@@ -1,4 +1,4 @@
-<div class="main-container" [ngStyle]="{ 'background-image': 'url(' + backgroundImageUrl + ')' }">
+<div class="main-container" [ngClass]="{'error-visible': !messageError, 'main-container': messageError}" [ngStyle]="{ 'background-image': 'url(' + backgroundImageUrl + ')' }">
   <div class="container-input">
     <input placeholder="Pesquise uma cidade" name="cidades" type="text" list="cidades" #cidades [formControl]="queryField">
     <datalist id="cidades">
@@ -7,6 +7,10 @@
     <span class="material-symbols-outlined" (click)="searchCity(cidades.value)" (click)="playSound()">
       search
     </span>
+  </div>
+
+  <div class="msgError" [hidden]="messageError" ngClass="{'messageError': messageError}">
+    <app-msg-error [textMessageError]="textMessageError"></app-msg-error>
   </div>
 
   <div class="container-main-weather-card">

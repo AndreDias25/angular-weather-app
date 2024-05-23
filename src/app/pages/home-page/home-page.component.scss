@@ -17,6 +17,24 @@
     background-position: center top; //!
   }
 
+  .error-visible {
+    display: grid;
+    height: 100vh;
+    grid-template-areas:
+      "input"
+      "error-message"
+      "weather-card"
+      "forecast-card"
+      "advice-card";
+    grid-template-rows: 1fr 1fr 3fr 2fr 2fr;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    justify-items: center;
+    background-image: url("../../../assets/images/cloud1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+  }
 
   .container-input{
     grid-area: input;
@@ -41,8 +59,10 @@
     span{
       font-size: 28px;
     }
+  }
 
-
+  .input-error{
+    grid-area: error-message;
   }
 
   .container-main-weather-card{

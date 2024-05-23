@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
 import { Next12Hours } from '../../models/Next12Hours';
 import { RandomQuote } from '../../models/RandomQuote';
 import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs';
+import { Observable, Subject, catchError, debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   cityName!: string;
   cityFound: CityAutoComplete[] = [];
   cityKeySelected!: string;
@@ -41,10 +42,12 @@ export class HomePageComponent implements OnInit {
 
   backgroundColorForecast!:string;
   audio = new Audio();
+  messageError:boolean = true;
+  textMessageError!:string;
 
 
   constructor(private service: AccuweatherApiService){
-    this.audio.src = '../../../assets/sounds/click.m4a';  // Substitua pelo caminho do seu arquivo de áudio
+    this.audio.src = '../../../assets/sounds/click.m4a';
     this.audio.load();
   }
 
@@ -56,7 +59,9 @@ export class HomePageComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         tap(cityname => {
-          this.service.getCityAutoComplete(cityname).subscribe((result: CityAutoComplete[]) => {
+          this.service.getCityAutoComplete(cityname)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((result: CityAutoComplete[]) => {
             console.log(result);
             console.log(result[0].LocalizedName);
             //this.cityFound = result.LocalizedName;
@@ -68,11 +73,14 @@ export class HomePageComponent implements OnInit {
             console.log("LocalizedName="+objeto.LocalizedName);
           })
         }),
+        takeUntil(this.destroy$)
       )
 
     this.results$.subscribe();
 
-    this.service.getRandomQuote().subscribe((quote: RandomQuote) => {
+    this.service.getRandomQuote()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((quote: RandomQuote) => {
       this.author = quote.author;
       this.content = quote.content;
     })
@@ -92,8 +100,14 @@ export class HomePageComponent implements OnInit {
   }
 
   searchCity(cityName:string, keyCity?:string | null, estadoCity?:string | null){
+    if(cityName === ''){
+      this.msgError('empty')
+    }
+
     if(this.cityFound.length === 0){
-      this.service.getCurrentCondition(keyCity).subscribe((result: CityCurrentCondition[]) => {
+      this.service.getCurrentCondition(keyCity)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result: CityCurrentCondition[]) => {
         console.log(result);
         this.temperature = result[0].Temperature.Metric.Value;
         this.weatherText = result[0].WeatherText;
@@ -102,7 +116,13 @@ export class HomePageComponent implements OnInit {
         this.localObservationDateTime = result[0].LocalObservationDateTime;
         this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
 
-        this.service.getIconsAndBackground().subscribe(dados => {
+        this.service.getIconsAndBackground()
+        .pipe(takeUntil(this.destroy$),
+        catchError(error => {
+          this.msgError('error');
+          return throwError('Ocorreu um erro na solicitação');
+        }))
+        .subscribe(dados => {
           dados.forEach((dados: any) => {
             if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
               this.iconWeather = dados.weatherIcon;
@@ -115,7 +135,9 @@ export class HomePageComponent implements OnInit {
         })
       })
 
-      this.service.getNext12hours(String(keyCity)).subscribe((result: Next12Hours | Next12Hours[]) => {
+      this.service.getNext12hours(String(keyCity))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result: Next12Hours | Next12Hours[]) => {
         if (Array.isArray(result)) {
 
           this.upcomingTimes = result.map(item => item.DateTime);
@@ -136,7 +158,9 @@ export class HomePageComponent implements OnInit {
           localStorage.setItem("keyCidade", this.cityKeySelected);
           localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
 
-          this.service.getCurrentCondition(this.cityKeySelected).subscribe((result: CityCurrentCondition[]) => {
+          this.service.getCurrentCondition(this.cityKeySelected)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((result: CityCurrentCondition[]) => {
             console.log(result);
             this.temperature = result[0].Temperature.Metric.Value;
             this.weatherText = result[0].WeatherText;
@@ -145,7 +169,9 @@ export class HomePageComponent implements OnInit {
             this.localObservationDateTime = result[0].LocalObservationDateTime;
             this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
 
-            this.service.getIconsAndBackground().subscribe(dados => {
+            this.service.getIconsAndBackground()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(dados => {
               dados.forEach((dados: any) => {
                 if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
                   this.iconWeather = dados.weatherIcon;
@@ -158,7 +184,9 @@ export class HomePageComponent implements OnInit {
             })
           })
 
-          this.service.getNext12hours(this.cityKeySelected).subscribe((result: Next12Hours | Next12Hours[]) => {
+          this.service.getNext12hours(this.cityKeySelected)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((result: Next12Hours | Next12Hours[]) => {
             if (Array.isArray(result)) {
 
               this.upcomingTimes = result.map(item => item.DateTime);
@@ -252,4 +280,28 @@ export class HomePageComponent implements OnInit {
     }
   }
 
+  msgError(situation:string){
+    this.messageError = false;
+
+    setTimeout(() => {
+      this.messageError = true;
+    }, 3000);
+
+    switch (situation) {
+      case 'empty':
+        this.textMessageError = "Digite o nome de uma cidade!"
+        break;
+      case 'error':
+        this.textMessageError = "Cidade inválida!"
+        break;
+      default:
+        this.textMessageError = "Erro!"
+        break;
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

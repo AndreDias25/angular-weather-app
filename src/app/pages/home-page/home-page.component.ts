@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
@@ -44,6 +44,22 @@ export class HomePageComponent implements OnInit, OnDestroy {
   audio = new Audio();
   messageError:boolean = true;
   textMessageError!:string;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event:any){
+    this.detectarMudancaNaResolucao();
+  }
+
+  detectarMudancaNaResolucao(){
+    const larguraDaTela = window.innerWidth;
+    const alturaDaTela = window.innerHeight;
+
+    if(larguraDaTela >= 1000){
+      console.log("entrei no 1000")
+      document.body.style.backgroundColor = this.textColor;
+      this.backgroundImageUrl = 'none';
+    }
+  }
 
 
   constructor(private service: AccuweatherApiService){
@@ -106,7 +122,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     if(this.cityFound.length === 0){
       this.service.getCurrentCondition(keyCity)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$),
+      catchError(error => {
+        this.msgError('error');
+        console.log("Não achei a cidade!")
+        return throwError('Ocorreu um erro na solicitação');
+      }))
       .subscribe((result: CityCurrentCondition[]) => {
         console.log(result);
         this.temperature = result[0].Temperature.Metric.Value;

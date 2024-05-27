@@ -16,4 +16,5 @@ export class MainWeatherCardComponent {
   @Input() iconWeather!: string;
   @Input() backgroundColor!:string;
   @Input() textColor!:string;
+  currentTime: number = Date.now();
 }

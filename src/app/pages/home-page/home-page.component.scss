@@ -1,86 +1,103 @@
-@media(max-width: 425px){
-  .main-container{
-    display: grid;
-    height: 100vh;
-    grid-template-areas:
+*{
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+.main-container{
+  display: grid;
+  height: 100vh;
+  grid-template-areas:
+  "input"
+  "weather-card"
+  "forecast-card"
+  "advice-card";
+  grid-template-rows: 1fr 3fr 2fr 2fr;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  justify-items: center;
+  //background-image: url("../../../assets/images/cloud1.png");
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // background-position: center top; //!
+}
+.error-visible {
+  display: grid;
+  height: 100vh;
+  grid-template-areas:
     "input"
+    "error-message"
     "weather-card"
     "forecast-card"
     "advice-card";
-    grid-template-rows: 1fr 3fr 2fr 2fr;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    justify-items: center;
-    background-image: url("../../../assets/images/cloud1.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center top; //!
+  grid-template-rows: 1fr 1fr 3fr 2fr 2fr;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  justify-items: center;
+  //background-image: url("../../../assets/images/cloud1.png");
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // background-position: center top;
+}
+.container-input{
+  grid-area: input;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  //border: 1px solid black;
+  color: #91B4C6;
+  input{
+    //color: #fff;
+    font-size: 15px;
+    // width: 100%;
+    // padding: 20px 5px 5px;
+    //background-color: blur(10px);
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    height: 30%;
+  }
+  span{
+    font-size: 28px;
+  }
+}
+.input-error{
+  grid-area: error-message;
+}
+.container-main-weather-card{
+  grid-area: weather-card;
+  width: 80%;
+}
+.container-forecast-card{
+  grid-area: forecast-card;
+  // display: flex;
+  // flex-wrap: wrap;
+  // align-content: center;
+  width: 80%;
+  margin: auto 0;
+}
+.container-random-advice-card{
+  grid-area: advice-card;
+  width: 80%;
+}
+
+@media(min-width: 425px){
+  .main-container{
+    grid-template-columns: none;
   }
 
-  .error-visible {
-    display: grid;
-    height: 100vh;
-    grid-template-areas:
-      "input"
-      "error-message"
-      "weather-card"
-      "forecast-card"
-      "advice-card";
-    grid-template-rows: 1fr 1fr 3fr 2fr 2fr;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    justify-items: center;
-    background-image: url("../../../assets/images/cloud1.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center top;
+  .error-visible{
+    grid-template-columns: none;
   }
 
   .container-input{
-    grid-area: input;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-    //border: 1px solid black;
-    color: #91B4C6;
-
+    width: 100%;
+    justify-content: center;
 
     input{
-      //color: #fff;
-      font-size: 15px;
-      // width: 100%;
-      // padding: 20px 5px 5px;
-      //background-color: blur(10px);
-      border: 1px solid #ced4da;
-      border-radius: 0.25rem;
-      height: 30%;
-    }
-
-    span{
-      font-size: 28px;
+      width: 70%;
+      max-width: 425px;
     }
   }
 
-  .input-error{
-    grid-area: error-message;
-  }
 
-  .container-main-weather-card{
-    grid-area: weather-card;
-    width: 80%;
-  }
-
-  .container-forecast-card{
-    grid-area: forecast-card;
-    // display: flex;
-    // flex-wrap: wrap;
-    // align-content: center;
-    width: 80%;
-    margin: auto 0;
-  }
-
-  .container-random-advice-card{
-    grid-area: advice-card;
-    width: 80%;
-  }
 }

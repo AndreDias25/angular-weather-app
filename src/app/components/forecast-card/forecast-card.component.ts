@@ -10,4 +10,5 @@ export class ForecastCardComponent {
     @Input() upcomingTimes!:string[];
     @Input() temperatureForecast!:number[];
     @Input() backgroundColorForecast!:string;
+
 }

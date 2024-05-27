@@ -1,13 +1,19 @@
 <div class="container" [ngStyle]="{'background-color':backgroundColorForecast}">
   <div class="container-items">
-    <div class="forecast-item" *ngFor='let upcoming of upcomingTimes | slice:0:10; let i = index'>
-      <div class="day-forecast"><p>{{upcoming | date:'shortTime'}}</p></div>
-      <div class="forecast-icon-number">
-        <span class="material-symbols-outlined">
-          filter_drama
-        </span>
-        <p class="forecast-number">{{temperatureForecast[i]}}°</p>
+    <ng-container *ngFor="let upcoming of upcomingTimes | slice:0:10; let i = index">
+      <div class="forecast-item">
+        <div class="day-forecast"><p>{{ upcoming | date:'shortTime' }}</p></div>
+        <div class="forecast-icon-number">
+          <span class="material-symbols-outlined">
+            filter_drama
+          </span>
+          <p class="forecast-number">{{ temperatureForecast[i] }}°</p>
+        </div>
       </div>
-    </div>
+      <!-- Condicional para exibir <hr> após cada bloco de 5 itens -->
+      <ng-container *ngIf="i === 4">
+        <hr class="line">
+      </ng-container>
+    </ng-container>
   </div>
 </div>

@@ -165,6 +165,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
               if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
                 this.iconWeather = dados.weatherIcon;
                 this.backgroundImageUrl = dados.backgroundImage;
+                this.weatherText = dados.Texto;
 
                 console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                 this.changeBackgroundAndColor(this.backgroundImageUrl)
@@ -215,6 +216,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
                   if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
                     this.iconWeather = dados.weatherIcon;
                     this.backgroundImageUrl = dados.backgroundImage;
+                    this.weatherText = dados.Texto;
 
                     console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                     this.changeBackgroundAndColor(this.backgroundImageUrl)

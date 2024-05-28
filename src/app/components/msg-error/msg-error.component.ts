@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-msg-error',
@@ -7,4 +7,9 @@ import { Component, Input } from '@angular/core';
 })
 export class MsgErrorComponent {
   @Input() textMessageError!:string;
+  @Output() closeError = new EventEmitter<void>();
+
+  onClose(){
+    this.closeError.emit();
+  }
 }

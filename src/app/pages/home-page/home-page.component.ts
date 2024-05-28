@@ -44,6 +44,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   audio = new Audio();
   messageError:boolean = true;
   textMessageError!:string;
+  ultimoBackground:string = this.backgroundImageUrl;
 
   @HostListener('window:resize', ['$event'])
   onResize(event:any){
@@ -54,11 +55,29 @@ export class HomePageComponent implements OnInit, OnDestroy {
     const larguraDaTela = window.innerWidth;
     const alturaDaTela = window.innerHeight;
 
-    if(larguraDaTela >= 1000){
+    if (larguraDaTela >= 1000) {
       console.log("entrei no 1000")
+
+      if (this.backgroundImageUrl === 'none') {
+          console.log("Nao pegar o valor do backurl")
+      } else {
+          this.ultimoBackground = this.backgroundImageUrl;
+      }
+
+      console.log(`Ultimo back(1000): ${this.ultimoBackground}`)
+
       document.body.style.backgroundColor = this.textColor;
       this.backgroundImageUrl = 'none';
-    }
+      document.body.style.backgroundImage = 'none';
+  } else if (larguraDaTela < 1000) {
+      console.log("menos de 1000");
+      console.log(`Ultimo back: ${this.ultimoBackground}`)
+
+      if (this.ultimoBackground) {
+          this.backgroundImageUrl = this.ultimoBackground;
+          document.body.style.backgroundImage = `url(${this.backgroundImageUrl})`;
+      }
+  }
   }
 
 
@@ -110,122 +129,127 @@ export class HomePageComponent implements OnInit, OnDestroy {
       console.log(ultimaCidade)
       this.searchCity(ultimaCidade, keyultimaCidade, estadoltimaCidade)
     }else{
-      //this.searchCity()
-      //continuar para definir uma cidade padrão caso seja a primeira vez do user no app
+      this.searchCity("São Paulo");
     }
   }
 
   searchCity(cityName:string, keyCity?:string | null, estadoCity?:string | null){
     if(cityName === ''){
       this.msgError('empty')
-    }
-
-    if(this.cityFound.length === 0){
-      this.service.getCurrentCondition(keyCity)
-      .pipe(takeUntil(this.destroy$),
-      catchError(error => {
-        this.msgError('error');
-        console.log("Não achei a cidade!")
-        return throwError('Ocorreu um erro na solicitação');
-      }))
-      .subscribe((result: CityCurrentCondition[]) => {
-        console.log(result);
-        this.temperature = result[0].Temperature.Metric.Value;
-        this.weatherText = result[0].WeatherText;
-        this.currentCity = cityName;
-        this.currentState = String(estadoCity);
-        this.localObservationDateTime = result[0].LocalObservationDateTime;
-        this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
-
-        this.service.getIconsAndBackground()
+    }else{
+      if(this.cityFound.length === 0){
+        this.service.getCurrentCondition(keyCity)
         .pipe(takeUntil(this.destroy$),
         catchError(error => {
           this.msgError('error');
+          console.log("Não achei a cidade!")
           return throwError('Ocorreu um erro na solicitação');
         }))
-        .subscribe(dados => {
-          dados.forEach((dados: any) => {
-            if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
-              this.iconWeather = dados.weatherIcon;
-              this.backgroundImageUrl = dados.backgroundImage;
+        .subscribe((result: CityCurrentCondition[]) => {
+          console.log(result);
+          this.temperature = result[0].Temperature.Metric.Value;
+          this.weatherText = result[0].WeatherText;
+          this.currentCity = cityName;
+          this.currentState = String(estadoCity);
+          this.localObservationDateTime = result[0].LocalObservationDateTime;
+          this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
 
-              console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
-              this.changeBackgroundAndColor(this.backgroundImageUrl)
-            }
-          });
+          this.service.getIconsAndBackground()
+          .pipe(takeUntil(this.destroy$),
+          catchError(error => {
+            this.msgError('error');
+            return throwError('Ocorreu um erro na solicitação');
+          }))
+          .subscribe(dados => {
+            dados.forEach((dados: any) => {
+              if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
+                this.iconWeather = dados.weatherIcon;
+                this.backgroundImageUrl = dados.backgroundImage;
+
+                console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
+                this.changeBackgroundAndColor(this.backgroundImageUrl)
+                this.detectarMudancaNaResolucao();
+              }
+            });
+          })
         })
-      })
 
-      this.service.getNext12hours(String(keyCity))
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: Next12Hours | Next12Hours[]) => {
-        if (Array.isArray(result)) {
+        this.service.getNext12hours(String(keyCity))
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((result: Next12Hours | Next12Hours[]) => {
+          if (Array.isArray(result)) {
 
-          this.upcomingTimes = result.map(item => item.DateTime);
-          this.temperatureForecast = result.map(item => item.Temperature.Value)
-          console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
-        } else {
+            this.upcomingTimes = result.map(item => item.DateTime);
+            this.temperatureForecast = result.map(item => item.Temperature.Value)
+            console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
+          } else {
 
-          this.upcomingTimes = [result.DateTime];
-          this.temperatureForecast = [result.Temperature.Value];
-        }
-      })
-    }else{
-      this.cityFound.forEach(objeto => {
-        if(objeto.LocalizedName === cityName){
-          this.cityKeySelected = objeto.Key;
-          console.log(this.cityKeySelected);
-          localStorage.setItem("nomeCidade", cityName);
-          localStorage.setItem("keyCidade", this.cityKeySelected);
-          localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
+            this.upcomingTimes = [result.DateTime];
+            this.temperatureForecast = [result.Temperature.Value];
+          }
+        })
+      }else{
+        this.cityFound.forEach(objeto => {
+          if(objeto.LocalizedName === cityName){
+            this.cityKeySelected = objeto.Key;
+            console.log(this.cityKeySelected);
+            localStorage.setItem("nomeCidade", cityName);
+            localStorage.setItem("keyCidade", this.cityKeySelected);
+            localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
 
-          this.service.getCurrentCondition(this.cityKeySelected)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((result: CityCurrentCondition[]) => {
-            console.log(result);
-            this.temperature = result[0].Temperature.Metric.Value;
-            this.weatherText = result[0].WeatherText;
-            this.currentCity = objeto.LocalizedName;
-            this.currentState = objeto.AdministrativeArea.LocalizedName;
-            this.localObservationDateTime = result[0].LocalObservationDateTime;
-            this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
-
-            this.service.getIconsAndBackground()
+            this.service.getCurrentCondition(this.cityKeySelected)
             .pipe(takeUntil(this.destroy$))
-            .subscribe(dados => {
-              dados.forEach((dados: any) => {
-                if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
-                  this.iconWeather = dados.weatherIcon;
-                  this.backgroundImageUrl = dados.backgroundImage;
+            .subscribe((result: CityCurrentCondition[]) => {
+              console.log(result);
+              this.temperature = result[0].Temperature.Metric.Value;
+              this.weatherText = result[0].WeatherText;
+              this.currentCity = objeto.LocalizedName;
+              this.currentState = objeto.AdministrativeArea.LocalizedName;
+              this.localObservationDateTime = result[0].LocalObservationDateTime;
+              this.realFeelTemperature = result[0].RealFeelTemperature.Metric.Value;
 
-                  console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
-                  this.changeBackgroundAndColor(this.backgroundImageUrl)
-                }
-              });
+              this.service.getIconsAndBackground()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(dados => {
+                dados.forEach((dados: any) => {
+                  if((result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && result[0].IsDayTime == dados.IsDayTime) || (result[0].WeatherText.toLowerCase() == dados.WeatherText.toLowerCase() && dados.IsDayTime == undefined)){
+                    this.iconWeather = dados.weatherIcon;
+                    this.backgroundImageUrl = dados.backgroundImage;
+
+                    console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
+                    this.changeBackgroundAndColor(this.backgroundImageUrl)
+                    this.detectarMudancaNaResolucao();
+                  }
+                });
+              })
             })
-          })
 
-          this.service.getNext12hours(this.cityKeySelected)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((result: Next12Hours | Next12Hours[]) => {
-            if (Array.isArray(result)) {
+            this.service.getNext12hours(this.cityKeySelected)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((result: Next12Hours | Next12Hours[]) => {
+              if (Array.isArray(result)) {
 
-              this.upcomingTimes = result.map(item => item.DateTime);
-              this.temperatureForecast = result.map(item => item.Temperature.Value)
-              console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
-            } else {
+                this.upcomingTimes = result.map(item => item.DateTime);
+                this.temperatureForecast = result.map(item => item.Temperature.Value)
+                console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
+              } else {
 
-              this.upcomingTimes = [result.DateTime];
-              this.temperatureForecast = [result.Temperature.Value];
-            }
-          })
-        }
-      })
+                this.upcomingTimes = [result.DateTime];
+                this.temperatureForecast = [result.Temperature.Value];
+              }
+            })
+          }
+        })
+      }
     }
   }
 
   playSound(){
     this.audio.play();
+  }
+
+  onCloseError(){
+    this.messageError = true;
   }
 
   changeBackgroundAndColor(backgroundImage:string){

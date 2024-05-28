@@ -10,7 +10,7 @@
   </div>
 
   <div class="msgError" [hidden]="messageError" ngClass="{'messageError': messageError}">
-    <app-msg-error [textMessageError]="textMessageError"></app-msg-error>
+    <app-msg-error [textMessageError]="textMessageError" (closeError)="onCloseError()"></app-msg-error>
   </div>
 
   <div class="container-main-weather-card">

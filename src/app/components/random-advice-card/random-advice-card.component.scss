@@ -14,3 +14,15 @@
     padding-top: 1em;
   }
 }
+
+@media(min-width: 600px){
+  .container{
+    color: #3B3B3B;
+    h3{
+      font-size: 20px;
+    }
+    p{
+      font-size: 14px;
+    }
+  }
+}

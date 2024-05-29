@@ -85,3 +85,35 @@
   }
 }
 
+@media(min-width: 600px){
+  .data-text{
+    p{
+      font-size: 19px;
+    }
+  }
+
+  .weather-text{
+    p{
+      font-size: 20px;
+    }
+  }
+
+  .localizacao{
+    p{
+      font-size: 15px;
+    }
+  }
+
+  .data{
+    p{
+      font-size: 14px;
+    }
+  }
+
+  .thermal-sensation-time{
+    p{
+      font-size: 14px;
+    }
+  }
+}
+

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
@@ -45,41 +45,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   messageError:boolean = true;
   textMessageError!:string;
   ultimoBackground:string = this.backgroundImageUrl;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event:any){
-    this.detectarMudancaNaResolucao();
-  }
-
-  detectarMudancaNaResolucao(){
-    const larguraDaTela = window.innerWidth;
-    const alturaDaTela = window.innerHeight;
-
-    if (larguraDaTela >= 1000) {
-      console.log("entrei no 1000")
-
-      if (this.backgroundImageUrl === 'none') {
-          console.log("Nao pegar o valor do backurl")
-      } else {
-          this.ultimoBackground = this.backgroundImageUrl;
-      }
-
-      console.log(`Ultimo back(1000): ${this.ultimoBackground}`)
-
-      document.body.style.backgroundColor = this.textColor;
-      this.backgroundImageUrl = 'none';
-      document.body.style.backgroundImage = 'none';
-  } else if (larguraDaTela < 1000) {
-      console.log("menos de 1000");
-      console.log(`Ultimo back: ${this.ultimoBackground}`)
-
-      if (this.ultimoBackground) {
-          this.backgroundImageUrl = this.ultimoBackground;
-          document.body.style.backgroundImage = `url(${this.backgroundImageUrl})`;
-      }
-  }
-  }
-
 
   constructor(private service: AccuweatherApiService){
     this.audio.src = '../../../assets/sounds/click.m4a';
@@ -169,7 +134,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
                 console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                 this.changeBackgroundAndColor(this.backgroundImageUrl)
-                this.detectarMudancaNaResolucao();
+                //this.detectarMudancaNaResolucao();
               }
             });
           })
@@ -220,7 +185,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
                     console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                     this.changeBackgroundAndColor(this.backgroundImageUrl)
-                    this.detectarMudancaNaResolucao();
+                    //this.detectarMudancaNaResolucao();
                   }
                 });
               })
@@ -261,6 +226,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.backgroundColor = '#FAE2BD';
         this.backgroundColorForecast = '#FAE2BD';
         this.textColor = '#EFAA82';
+
+        if(window.innerWidth >= 1000){
+
+        }
         break;
       case "../../assets/images/sunny2.png":
         console.log("Sunny2");

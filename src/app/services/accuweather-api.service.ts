@@ -19,8 +19,6 @@ export class AccuweatherApiService {
   constructor(private http: HttpClient) { }
 
   getCityAutoComplete(cityName:string):Observable<CityAutoComplete[]>{
-    //this.cityAutoCompleteModel = this.http.get<CityAutoComplete>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
-    //return this.cityAutoCompleteModel;
     return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
   }
 

@@ -31,7 +31,6 @@ export class ForecastCardComponent implements OnInit, OnChanges{
     private updateColors(){
       const larguraDaTela = window.innerWidth;
       if(larguraDaTela >= 1000){
-        console.log(`Forecast vai receber esse cor:${this.textColor}`)
         this.textColorForecast = this.textColor;
       }else{
         this.textColorForecast = '#FFFFFF'

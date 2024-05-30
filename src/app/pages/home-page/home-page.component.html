@@ -4,9 +4,11 @@
     <datalist id="cidades">
       <option *ngFor="let city of cityFound" [value]="city.LocalizedName">{{ city.LocalizedName }} - {{city.AdministrativeArea.LocalizedName}}</option>
     </datalist>
-    <span class="material-symbols-outlined" (click)="searchCity(cidades.value)" (click)="playSound()">
-      search
-    </span>
+    <div class="container-search-button">
+      <span class="material-symbols-outlined" (click)="searchCity(cidades.value)" (click)="playSound()">
+        search
+      </span>
+    </div>
   </div>
 
   <div class="msgError" [hidden]="messageError" ngClass="{'messageError': messageError}">
@@ -18,7 +20,7 @@
   </div>
 
   <div class="container-forecast-card">
-    <app-forecast-card [upcomingTimes]="upcomingTimes" [temperatureForecast]="temperatureForecast" [backgroundColorForecast]="backgroundColorForecast" [textColor]="textColor"></app-forecast-card>
+    <app-forecast-card [upcomingTimes]="upcomingTimes" [temperatureForecast]="temperatureForecast" [backgroundColorForecast]="backgroundColorForecast" [textColor]="iconsColor"></app-forecast-card>
   </div>
 
   <div class="container-random-advice-card">

@@ -39,6 +39,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   backgroundColor!:string;
   textColor!:string;
+  iconsColor!:string;
 
   backgroundColorForecast!:string;
   audio = new Audio();
@@ -62,15 +63,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
           this.service.getCityAutoComplete(cityname)
           .pipe(takeUntil(this.destroy$))
           .subscribe((result: CityAutoComplete[]) => {
-            console.log(result);
-            console.log(result[0].LocalizedName);
-            //this.cityFound = result.LocalizedName;
             this.cityFound = result;
-            console.log("cityFound="+this.cityFound)
           });
 
           this.cityFound.forEach(objeto => {
-            console.log("LocalizedName="+objeto.LocalizedName);
           })
         }),
         takeUntil(this.destroy$)
@@ -85,16 +81,13 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.content = quote.content;
     })
 
-    console.log(`Tipo: ${this.cityFound.length}`);
-
     let ultimaCidade:string | null = localStorage.getItem("nomeCidade");
     let keyultimaCidade:string | null  = localStorage.getItem("keyCidade");
     let estadoltimaCidade:string | null  = localStorage.getItem("estadoCidade");
     if(ultimaCidade){
-      console.log(ultimaCidade)
       this.searchCity(ultimaCidade, keyultimaCidade, estadoltimaCidade)
     }else{
-      this.searchCity("São Paulo");
+      this.searchCity("São Paulo", "45881", "São Paulo");
     }
   }
 
@@ -107,11 +100,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$),
         catchError(error => {
           this.msgError('error');
-          console.log("Não achei a cidade!")
           return throwError('Ocorreu um erro na solicitação');
         }))
         .subscribe((result: CityCurrentCondition[]) => {
-          console.log(result);
           this.temperature = result[0].Temperature.Metric.Value;
           this.weatherText = result[0].WeatherText;
           this.currentCity = cityName;
@@ -132,7 +123,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
                 this.backgroundImageUrl = dados.backgroundImage;
                 this.weatherText = dados.Texto;
 
-                console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                 this.changeBackgroundAndColor(this.backgroundImageUrl)
                 //this.detectarMudancaNaResolucao();
               }
@@ -147,7 +137,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
             this.upcomingTimes = result.map(item => item.DateTime);
             this.temperatureForecast = result.map(item => item.Temperature.Value)
-            console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
           } else {
 
             this.upcomingTimes = [result.DateTime];
@@ -158,7 +147,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.cityFound.forEach(objeto => {
           if(objeto.LocalizedName === cityName){
             this.cityKeySelected = objeto.Key;
-            console.log(this.cityKeySelected);
             localStorage.setItem("nomeCidade", cityName);
             localStorage.setItem("keyCidade", this.cityKeySelected);
             localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
@@ -166,7 +154,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
             this.service.getCurrentCondition(this.cityKeySelected)
             .pipe(takeUntil(this.destroy$))
             .subscribe((result: CityCurrentCondition[]) => {
-              console.log(result);
               this.temperature = result[0].Temperature.Metric.Value;
               this.weatherText = result[0].WeatherText;
               this.currentCity = objeto.LocalizedName;
@@ -183,7 +170,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
                     this.backgroundImageUrl = dados.backgroundImage;
                     this.weatherText = dados.Texto;
 
-                    console.log(`Icon: ${this.iconWeather} -  Image: ${this.backgroundImageUrl}`);
                     this.changeBackgroundAndColor(this.backgroundImageUrl)
                     //this.detectarMudancaNaResolucao();
                   }
@@ -198,7 +184,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
                 this.upcomingTimes = result.map(item => item.DateTime);
                 this.temperatureForecast = result.map(item => item.Temperature.Value)
-                console.log(`Horário: ${this.upcomingTimes} - Temperatura: ${this.temperatureForecast }`)
               } else {
 
                 this.upcomingTimes = [result.DateTime];
@@ -222,74 +207,70 @@ export class HomePageComponent implements OnInit, OnDestroy {
   changeBackgroundAndColor(backgroundImage:string){
     switch(backgroundImage){
       case "../../assets/images/sunny1.png":
-        console.log("Sunny1");
         this.backgroundColor = '#FAE2BD';
         this.backgroundColorForecast = '#FAE2BD';
         this.textColor = '#EFAA82';
-
-        if(window.innerWidth >= 1000){
-
-        }
+        this.iconsColor = '#B34214';
         break;
       case "../../assets/images/sunny2.png":
-        console.log("Sunny2");
         this.backgroundColor = '#9FDCA8';
         this.backgroundColorForecast = "#8ECA96";
         this.textColor = '#71A78F';
+        this.iconsColor = '#4A5C54';
         break;
       case "../../assets/images/cloud1.png":
-        console.log("Cloud1");
         this.backgroundColor = '#91B4C6';
         this.backgroundColorForecast = '#91B4C6';
         this.textColor = '#CAD7DF';
+        this.iconsColor = '#3A3D40';
         break;
       case "../../assets/images/cloud2.png":
-        console.log("Cloud2");
         this.backgroundColor = '#5A8BAB';
         this.backgroundColorForecast = '#5A8BAB';
         this.textColor = '#AED5E4';
+        this.iconsColor = '#AED5E4';
         break;
       case "../../assets/images/cloud3.png":
-        console.log("Cloud3");
         this.backgroundColor = '#AC736A';
         this.backgroundColorForecast = '#AC736A';
         this.textColor = '#F6C8A4';
+        this.iconsColor = '#F6C8A4'
         break;
       case "../../assets/images/cloud4.png":
-        console.log("Cloud4");
         this.backgroundColor = '#9090AC';
         this.backgroundColorForecast = '#484A82';
         this.textColor = '#484A82';
+        this.iconsColor = '#E8E9F6';
         break;
       case "../../assets/images/rainy1.png":
-        console.log("Rainy1");
         this.backgroundColor = '#40666A';
         this.backgroundColorForecast = '#40666A';
         this.textColor = '#C9E8E0';
+        this.iconsColor = '#C9E8E0';
         break;
       case "../../assets/images/rainy2.png":
-        console.log("Rainy2");
         this.backgroundColor = '#615273';
         this.backgroundColorForecast = '#CCDAFF'
         this.textColor = '#C2B8FF';
+        this.iconsColor = '#615273';
         break;
       case "../../assets/images/rainy3.png":
-        console.log("Rainy3");
         this.backgroundColor = '#7FC3AE';
         this.backgroundColorForecast = '#7FC3AE'
         this.textColor = '#C9E8E0';
+        this.iconsColor = '#32433E';
         break;
       case "../../assets/images/snowy1.png":
-        console.log("Snowy1");
         this.backgroundColor = '#99B8CC';
         this.backgroundColorForecast = '#99B8CC';
         this.textColor = '#E4F1F9';
+        this.iconsColor = '#E4F1F9';
         break;
       case "../../assets/images/snowy2.png":
-        console.log("Snowy2");
         this.backgroundColor = '#A7ACC4';
         this.backgroundColorForecast = '#A7ACC4';
         this.textColor = '#E2E2E3';
+        this.iconsColor = '#E2E2E3';
         break;
       default:
         break;

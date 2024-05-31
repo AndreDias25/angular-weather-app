@@ -3,6 +3,7 @@
 #environment
 src/environments/environment.ts
 src/environments/environment.development.ts
+src/environments/environment.prod.ts
 
 # Compiled output
 /dist

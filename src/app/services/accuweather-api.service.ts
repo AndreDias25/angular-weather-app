@@ -6,7 +6,7 @@ import { CityCurrentCondition } from '../models/CityCurrentCondition';
 import { Next12Hours} from '../models/Next12Hours';
 import { RandomQuote } from '../models/RandomQuote';
 import { handler } from 'functions/fetch-api-key/fetch-api-key';
-import { environment } from '@environments/environment.development';
+
 
 
 @Injectable({
@@ -16,7 +16,7 @@ export class AccuweatherApiService {
   private cityautoComplete:string = "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
   private cityCurrentCondition:string = "http://dataservice.accuweather.com/currentconditions/v1/";
   private Next12hours:string = "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/";
-  private apiKey:string = environment.API_KEY;
+  private apiKey:string | undefined = process.env['API_KEY'];
 
   constructor(private http: HttpClient) { }
 

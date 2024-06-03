@@ -14,32 +14,20 @@ export class AccuweatherApiService {
   private cityautoComplete:string = "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
   private cityCurrentCondition:string = "http://dataservice.accuweather.com/currentconditions/v1/";
   private Next12hours:string = "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/";
-  private apiKey:BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private apiKey:string | undefined = process.env['API_KEY'];
 
   constructor(private http: HttpClient) { }
 
-  fetchApiKey(): void {
-    this.http.get<{ apiKey: string }>('https://weatherangularapp1.netlify.app/.netlify/functions/fetch-api-key').pipe(
-      tap(response => this.apiKey.next(response.apiKey))
-    ).subscribe();
-  }
-
   getCityAutoComplete(cityName:string):Observable<CityAutoComplete[]>{
-    return this.apiKey.pipe(
-      switchMap(apiKey => this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${apiKey}&q=${cityName}`))
-    );
+    return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
   }
 
   getCurrentCondition(cityKey:string | null | undefined){
-    return this.apiKey.pipe(
-      switchMap(apiKey => this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${apiKey}&details=true`))
-    );
+    return this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${this.apiKey}&details=true`)
   }
 
   getNext12hours(cityKey:string){
-    return this.apiKey.pipe(
-      switchMap(apiKey => this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${apiKey}&metric=true`))
-    );
+    return this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${this.apiKey}&metric=true`)
   }
 
   getRandomQuote(){

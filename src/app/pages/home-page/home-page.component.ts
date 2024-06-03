@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID  } from '@angular/core';
 import { AccuweatherApiService } from '../../services/accuweather-api.service';
 import { CityAutoComplete } from '../../models/CityAutoComplete';
 import { CityCurrentCondition } from '../../models/CityCurrentCondition';
 import { Next12Hours } from '../../models/Next12Hours';
 import { RandomQuote } from '../../models/RandomQuote';
 import { FormControl } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable, Subject, catchError, debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, throwError } from 'rxjs';
 
 @Component({
@@ -42,14 +43,16 @@ export class HomePageComponent implements OnInit, OnDestroy {
   iconsColor!:string;
 
   backgroundColorForecast!:string;
-  audio = new Audio();
+  audio: HTMLAudioElement | null = null;
   messageError:boolean = true;
   textMessageError!:string;
   ultimoBackground:string = this.backgroundImageUrl;
 
-  constructor(private service: AccuweatherApiService){
-    this.audio.src = '../../../assets/sounds/click.m4a';
-    this.audio.load();
+  constructor(private service: AccuweatherApiService, @Inject(PLATFORM_ID) private platformId: any){
+    if (isPlatformBrowser(this.platformId)) {
+      this.audio = new Audio('../../../assets/sounds/click.m4a');
+      this.audio.load();
+    }
   }
 
   ngOnInit() {
@@ -81,13 +84,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.content = quote.content;
     })
 
-    let ultimaCidade:string | null = localStorage.getItem("nomeCidade");
-    let keyultimaCidade:string | null  = localStorage.getItem("keyCidade");
-    let estadoltimaCidade:string | null  = localStorage.getItem("estadoCidade");
-    if(ultimaCidade){
-      this.searchCity(ultimaCidade, keyultimaCidade, estadoltimaCidade)
-    }else{
-      this.searchCity("São Paulo", "45881", "São Paulo");
+    if (isPlatformBrowser(this.platformId)) {
+      let ultimaCidade:string | null = localStorage.getItem("nomeCidade");
+      let keyultimaCidade:string | null  = localStorage.getItem("keyCidade");
+      let estadoltimaCidade:string | null  = localStorage.getItem("estadoCidade");
+      if(ultimaCidade){
+        this.searchCity(ultimaCidade, keyultimaCidade, estadoltimaCidade)
+      }else{
+        this.searchCity("São Paulo", "45881", "São Paulo");
+      }
     }
   }
 
@@ -147,9 +152,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.cityFound.forEach(objeto => {
           if(objeto.LocalizedName === cityName){
             this.cityKeySelected = objeto.Key;
-            localStorage.setItem("nomeCidade", cityName);
-            localStorage.setItem("keyCidade", this.cityKeySelected);
-            localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
+            if (isPlatformBrowser(this.platformId)) {
+              localStorage.setItem("nomeCidade", cityName);
+              localStorage.setItem("keyCidade", this.cityKeySelected);
+              localStorage.setItem("estadoCidade", objeto.AdministrativeArea.LocalizedName);
+            }
 
             this.service.getCurrentCondition(this.cityKeySelected)
             .pipe(takeUntil(this.destroy$))
@@ -197,7 +204,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   playSound(){
-    this.audio.play();
+    if(this.audio){
+      this.audio.play();
+    }
   }
 
   onCloseError(){

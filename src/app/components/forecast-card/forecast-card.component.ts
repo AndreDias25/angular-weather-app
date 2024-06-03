@@ -1,5 +1,5 @@
-import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { SlicePipe } from '@angular/common';
+import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges, PLATFORM_ID, Inject } from '@angular/core';
+import { SlicePipe, isPlatformBrowser  } from '@angular/common';
 
 @Component({
   selector: 'app-forecast-card',
@@ -13,27 +13,37 @@ export class ForecastCardComponent implements OnInit, OnChanges{
     @Input() textColor!:string;
     textColorForecast!:string;
 
+    constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+
     ngOnInit(){
-      this.updateColors();
+      if (isPlatformBrowser(this.platformId)) {
+        this.updateColors();
+      }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-      if (changes['textColor'] || changes['backgroundColorForecast']) {
-        this.updateColors();
+      if (isPlatformBrowser(this.platformId)) {
+        if (changes['textColor'] || changes['backgroundColorForecast']) {
+          this.updateColors();
+        }
       }
     }
 
     @HostListener('window:resize', ['$event'])
     onResize(event:any){
-      this.updateColors();
+      if (isPlatformBrowser(this.platformId)) {
+        this.updateColors();
+      }
     }
 
     private updateColors(){
-      const larguraDaTela = window.innerWidth;
-      if(larguraDaTela >= 1000){
-        this.textColorForecast = this.textColor;
-      }else{
-        this.textColorForecast = '#FFFFFF'
+      if (isPlatformBrowser(this.platformId)) {
+        const larguraDaTela = window.innerWidth;
+        if(larguraDaTela >= 1000){
+          this.textColorForecast = this.textColor;
+        }else{
+          this.textColorForecast = '#FFFFFF'
+        }
       }
     }
 }

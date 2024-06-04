@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
 import { CityAutoComplete } from '../models/CityAutoComplete';
 import { CityCurrentCondition } from '../models/CityCurrentCondition';
 import { Next12Hours} from '../models/Next12Hours';
@@ -16,20 +16,31 @@ export class AccuweatherApiService {
   private cityautoComplete:string = "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
   private cityCurrentCondition:string = "http://dataservice.accuweather.com/currentconditions/v1/";
   private Next12hours:string = "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/";
-  private apiKey:string | undefined = process.env['API_KEY'];
+  private apiKey$!: Observable<string>
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.apiKey$ = this.http.get<{ apiKey: string }>('/api/get-api-key').pipe(map(response => response.apiKey));
+   }
 
   getCityAutoComplete(cityName:string):Observable<CityAutoComplete[]>{
-    return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
+    // return this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${this.apiKey}&q=${cityName}`)
+    return this.apiKey$.pipe(
+      switchMap(apiKey => this.http.get<CityAutoComplete[]>(`${this.cityautoComplete}?apikey=${apiKey}&q=${cityName}`))
+    );
   }
 
   getCurrentCondition(cityKey:string | null | undefined){
-    return this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${this.apiKey}&details=true`)
+    // return this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${this.apiKey}&details=true`)
+    return this.apiKey$.pipe(
+      switchMap(apiKey => this.http.get<CityCurrentCondition[]>(`${this.cityCurrentCondition}${cityKey}?apikey=${apiKey}&details=true`))
+    );
   }
 
   getNext12hours(cityKey:string){
-    return this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${this.apiKey}&metric=true`)
+    // return this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${this.apiKey}&metric=true`)
+    return this.apiKey$.pipe(
+      switchMap(apiKey => this.http.get<Next12Hours[]>(`${this.Next12hours}${cityKey}?apikey=${apiKey}&metric=true`))
+    );
   }
 
   getRandomQuote(){
